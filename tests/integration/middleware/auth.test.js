@@ -10,6 +10,9 @@ const {
 describe('auth middleware', () => {
     beforeEach(() => {
         server = require('../../../index');
+        token = new User({
+            userName: 'admin'
+        }).generateAuthToken();
     });
     afterEach(async () => {
         await Sport.deleteMany({});
@@ -23,15 +26,9 @@ describe('auth middleware', () => {
             .post('/api/sports')
             .set('x-auth-token', token)
             .send({
-                name: 'Football'
+                sportName: 'Football'
             });
     }
-
-    beforeEach(() => {
-        token = new User({
-            userName: 'admin'
-        }).generateAuthToken();
-    })
 
     it('should return 401 if no token is provided', async () => {
         token = '';
@@ -45,7 +42,7 @@ describe('auth middleware', () => {
         expect(res.status).toBe(400);
     });
 
-    it('should return 200 if no token is valid', async () => {
+    it('should return 200 if token is valid', async () => {
         const res = await exec();
         expect(res.status).toBe(200);
     });

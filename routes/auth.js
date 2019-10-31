@@ -1,4 +1,4 @@
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const bcrypt = require('bcrypt');
 const {
   User
@@ -18,22 +18,22 @@ router.post('/', async (req, res) => {
   let user = await User.findOne({
     userName: req.body.userName
   });
-  if (!user) return res.status(400).send('Invalid user or password.');
+  if (!user) return res.status(400).send('Invalid user');
 
   const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (!validPassword) return res.status(400).send('Invalid user or password.');
+  if (!validPassword) return res.status(400).send('Invalid password.');
 
   const token = user.generateAuthToken();
   res.send(token);
 });
 
 function validate(req) {
-  const schema = {
-    userName: Joi.string().min(5).max(255).required(),
-    password: Joi.string().min(5).max(255).required()
-  };
+  const schema = Joi.object({
+    userName: Joi.string().min(3).max(50).required(),
+    password: Joi.string().min(8).max(255).required()
+  });
 
-  return Joi.validate(req, schema);
+  return schema.validate(req);
 }
 
 module.exports = router;

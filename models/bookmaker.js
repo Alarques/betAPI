@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 
 const bookmakerSchema = new mongoose.Schema({
     bookmaker: {
@@ -20,12 +20,12 @@ const bookmakerSchema = new mongoose.Schema({
 const Bookmaker = mongoose.model('Bookmaker', bookmakerSchema);
 
 function validateBookmaker(bookmaker) {
-    const schema = {
+    const schema = Joi.object({
         bookmaker: Joi.string().required(),
         user_id: Joi.required(),
         bank: Joi.number()
-    };
-    return Joi.validate(bookmaker, schema);
+    });
+    return schema.validate(bookmaker);
 }
 
 exports.Bookmaker = Bookmaker;

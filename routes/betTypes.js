@@ -10,6 +10,7 @@ const auth = require('../middleware/auth');
 
 /**
  * * Obtiene todos los tipos de apuestas 
+ * REVIEW Deberia existir para obtener todas?
  */
 router.get('/', async (req, res) => {
     const betTypes = await BetType.find().sort('type');

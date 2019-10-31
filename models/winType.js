@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 
 const winTypeSchema = new mongoose.Schema({
     win: {
@@ -18,11 +18,11 @@ const winTypeSchema = new mongoose.Schema({
 const WinType = mongoose.model('WinType', winTypeSchema);
 
 function validateWinType(winType) {
-    const schema = {
+    const schema = Joi.object({
         win: Joi.string().min(1).max(2).required(),
         description: Joi.string().required()
-    };
-    return Joi.validate(winType, schema);
+    });
+    return schema.validate(winType);
 }
 
 exports.WinType = WinType;

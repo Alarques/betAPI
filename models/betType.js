@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 
 const betTypeSchema = new mongoose.Schema({
     betType: {
@@ -15,11 +15,11 @@ const betTypeSchema = new mongoose.Schema({
 const BetType = mongoose.model('BetType', betTypeSchema);
 
 function validateBetType(betType) {
-    const schema = {
+    const schema = Joi.object({
         betType: Joi.string().required(),
         sport_id: Joi.required()
-    };
-    return Joi.validate(betType, schema);
+    });
+    return schema.validate(betType);
 }
 
 exports.BetType = BetType;

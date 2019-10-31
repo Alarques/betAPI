@@ -16,7 +16,7 @@ const auth = require('../middleware/auth');
  * 
  * @param id El ID del usuario
  */
-router.get('/:id', validateObjectId, async (req, res) => {
+router.get('/:id', [auth, validateObjectId], async (req, res) => {
     const bets = await Bet.find({
         user_id: req.params.id
     }).sort('date');

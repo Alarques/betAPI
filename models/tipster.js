@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 
 const tipsterSchema = new mongoose.Schema({
     tipster: {
@@ -16,11 +16,11 @@ const tipsterSchema = new mongoose.Schema({
 const Tipster = mongoose.model('Tipster', tipsterSchema);
 
 function validateTipster(tipster) {
-    const schema = {
+    const schema = Joi.object({
         tipster: Joi.string().required(),
         user_id: Joi.required()
-    };
-    return Joi.validate(tipster, schema);
+    });
+    return schema.validate(tipster);
 }
 
 exports.Tipster = Tipster;

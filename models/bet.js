@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 
 const ObjectId = mongoose.Types.ObjectId;
 
 const betSchema = new mongoose.Schema({
-    date: { 
+    date: {
         type: Date,
         default: Date.now
     },
@@ -82,7 +82,7 @@ const betSchema = new mongoose.Schema({
 const Bet = mongoose.model('Bet', betSchema);
 
 function validateBet(bet) {
-    const schema = {
+    const schema = Joi.object({
         date: Joi.date(),
         bookmaker_id: Joi.required(),
         sport: Joi.string().required(),
@@ -101,8 +101,8 @@ function validateBet(bet) {
         profitLoss: Joi.number(),
         notes: Joi.string().allow('', null).max(255),
         user_id: Joi.required()
-    };
-    return Joi.validate(bet, schema);
+    });
+    return schema.validate(bet);
 }
 
 exports.Bet = Bet;

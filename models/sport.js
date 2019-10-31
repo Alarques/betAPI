@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 
 const sportSchema = new mongoose.Schema({
     sportName: {
@@ -12,10 +12,10 @@ const sportSchema = new mongoose.Schema({
 const Sport = mongoose.model('Sport', sportSchema);
 
 function validateSport(sport) {
-    const schema = {
+    const schema = Joi.object({
         sportName: Joi.string().required()
-    };
-    return Joi.validate(sport, schema);
+    });
+    return schema.validate(sport);
 }
 
 exports.Sport = Sport;
