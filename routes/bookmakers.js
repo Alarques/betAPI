@@ -29,7 +29,13 @@ router.post('/', [auth, validateUserId], async (req, res) => {
     let bookmaker = new Bookmaker({
         bookmaker: req.body.bookmaker,
         user_id: req.body.user_id,
-        bank: req.body.bank
+        bank: req.body.bank,
+        deposits: req.body.deposits,
+        withdrawals: req.body.withdrawals,
+        bonus: req.body.bonus,
+        wagers: req.body.wagers,
+        winnings: req.body.winnings,
+        netProfit: req.body.netProfit
     });
     bookmaker = await bookmaker.save();
 
@@ -50,7 +56,13 @@ router.put('/:id', [auth, validateObjectId, validateUserId], async (req, res) =>
     const bookmaker = await Bookmaker.findByIdAndUpdate(req.params.id, {
         bookmaker: req.body.bookmaker,
         user_id: req.body.user_id,
-        bank: req.body.bank
+        bank: req.body.bank,
+        deposits: req.body.deposits,
+        withdrawals: req.body.withdrawals,
+        bonus: req.body.bonus,
+        wagers: req.body.wagers,
+        winnings: req.body.winnings,
+        netProfit: req.body.netProfit
     }, {
         new: true
     });
