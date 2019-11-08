@@ -1,0 +1,4 @@
+{
+  "jwtPrivateKey": "jwtPrivateKey",
+  "db": "mongodb+srv://dbAdmin:KdwBpFeh68NmOFWi@bets-t5urt.mongodb.net/test?retryWrites=true&w=majority"
+}
