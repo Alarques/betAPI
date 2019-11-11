@@ -39,4 +39,15 @@ router.post('/', async (req, res) => {
   res.header('x-auth-token', token).send(_.pick(user, ['_id', 'userName', 'email']));
 });
 
+/**
+ * * Busca un usuario por email
+ */
+router.get('/email/:email', auth, async (req, res) => {
+  const user = await User.findOne({'email': req.params.email}).select('-password');
+
+  if (!user || user.length === 0) return res.status(404).send('The user with the given email was not found.');
+
+  res.send(user);
+});
+
 module.exports = router;
