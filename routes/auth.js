@@ -27,7 +27,8 @@ router.post('/', async (req, res) => {
   res.status(200).json({
     token: token,
     userName: user.userName,
-    email: user.email
+    email: user.email,
+    _id: user._id
   });
 });
 
