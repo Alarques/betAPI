@@ -50,4 +50,15 @@ router.get('/email/:email', auth, async (req, res) => {
   res.send(user);
 });
 
+/**
+ * * Busca un usuario por nombre
+ */
+router.get('/name/:name', async (req, res) => {
+  const user = await User.findOne({'userName': req.params.name}).select('-password');
+
+  if (!user || user.length === 0) return res.status(404).send('The user with the given name was not found.');
+
+  res.send(user);
+});
+
 module.exports = router;
