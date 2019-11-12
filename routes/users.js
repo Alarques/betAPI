@@ -42,7 +42,7 @@ router.post('/', async (req, res) => {
 /**
  * * Busca un usuario por email
  */
-router.get('/email/:email', async (req, res) => {
+router.get('/email/:email', auth, async (req, res) => {
   const user = await User.findOne({'email': req.params.email}).select('-password');
 
   if (!user || user.length === 0) return res.status(404).send('The user with the given email was not found.');
@@ -53,7 +53,7 @@ router.get('/email/:email', async (req, res) => {
 /**
  * * Busca un usuario por nombre
  */
-router.get('/name/:name', async (req, res) => {
+router.get('/name/:name', auth, async (req, res) => {
   const user = await User.findOne({'userName': req.params.name}).select('-password');
 
   if (!user || user.length === 0) return res.status(404).send('The user with the given name was not found.');
