@@ -122,7 +122,7 @@ router.get('/user/:id', validateObjectId, async (req, res) => {
         user_id: req.params.id
     });
 
-    if (!bookmakers || bookmakers.length === 0) return res.status(204).send('The bookmakers with the given user was not found.');
+    if (!bookmakers || bookmakers.length === 0) return res.status(404).send('The bookmakers with the given user was not found.');
 
     res.send(bookmakers);
 });
