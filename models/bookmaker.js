@@ -4,8 +4,7 @@ const Joi = require('@hapi/joi');
 const bookmakerSchema = new mongoose.Schema({
     bookmaker: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
