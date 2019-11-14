@@ -28,6 +28,7 @@ router.post('/', async (req, res) => {
     token: token,
     userName: user.userName,
     email: user.email,
+    totalBank: user.totalBank,
     _id: user._id
   });
 });
@@ -35,7 +36,8 @@ router.post('/', async (req, res) => {
 function validate(req) {
   const schema = Joi.object({
     userName: Joi.string().required(),
-    password: Joi.string().required()
+    password: Joi.string().required(),
+    totalBank: Joi.number()
   });
 
   return schema.validate(req);
