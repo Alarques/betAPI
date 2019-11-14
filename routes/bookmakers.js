@@ -120,7 +120,7 @@ router.get('/bookmaker/:bookmaker', async (req, res) => {
 router.get('/user/:id', validateObjectId, async (req, res) => {
     const bookmakers = await Bookmaker.find({
         user_id: req.params.id
-    });
+    }).sort('bank');
 
     //if (!bookmakers || bookmakers.length === 0) return res.status(404).send('The bookmakers with the given user was not found.');
 
