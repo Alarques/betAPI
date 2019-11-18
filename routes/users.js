@@ -73,10 +73,6 @@ router.get('/name/:name', auth, async (req, res) => {
  * @param id ID del usuario
  */
 router.put('/totalBank/:id', [auth, validateObjectId], async (req, res) => {
-  const {
-      error
-  } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
 
   let user = await User.findOne({
     _id: req.params.id
