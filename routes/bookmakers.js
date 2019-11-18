@@ -47,7 +47,7 @@ router.post('/', [auth, validateUserId], async (req, res) => {
  * 
  * @param id ID de la casa de apuestas
  */
-router.put('/:id', [auth, validateObjectId], async (req, res) => {
+router.put('/:id', [auth, validateObjectId, validateUserId], async (req, res) => {
     const {
         error
     } = validate(req.body);
@@ -55,6 +55,7 @@ router.put('/:id', [auth, validateObjectId], async (req, res) => {
 
     const bookmaker = await Bookmaker.findByIdAndUpdate(req.params.id, {
         bookmaker: req.body.bookmaker,
+        user_id: req.body.user_id,
         bank: req.body.bank,
         deposits: req.body.deposits,
         withdrawals: req.body.withdrawals,
