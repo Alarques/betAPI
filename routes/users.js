@@ -81,7 +81,8 @@ router.put('/totalBank/:id', [auth, validateObjectId], async (req, res) => {
   const user = await User.findByIdAndUpdate(req.params.id, {
       totalBank: req.body.totalBank
   }, {
-      new: true
+      new: true,
+      runValidators: false
   });
 
   if (!user) return res.status(404).send('The user with the given ID was not found.');
