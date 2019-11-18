@@ -6,6 +6,7 @@ const bookmakers = require('../routes/bookmakers');
 const winTypes = require('../routes/winTypes');
 const bets = require('../routes/bets');
 const users = require('../routes/users');
+const deposits = require('../routes/deposits')
 const auth = require('../routes/auth');
 const error = require('../middleware/error');
 
@@ -18,6 +19,7 @@ module.exports = function (app) {
   app.use('/api/winTypes', winTypes);
   app.use('/api/bets', bets);
   app.use('/api/users', users);
+  app.use('/api/deposits', deposits)
   app.use('/api/auth', auth);
   app.use(error);
 }
