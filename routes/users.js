@@ -1,4 +1,5 @@
 const auth = require('../middleware/auth');
+const validateObjectId = require('../middleware/validate/validateObjectId');
 const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const {
@@ -62,6 +63,28 @@ router.get('/name/:name', auth, async (req, res) => {
   const user = await User.findOne({'userName': req.params.name}).select('-password');
 
   if (!user || user.length === 0) return res.status(404).send('The user with the given name was not found.');
+
+  res.send(user);
+});
+
+/**
+ * * Actualiza al banco total de un usuario
+ * 
+ * @param id ID del usuario
+ */
+router.put('/totalBank/:id', [auth, validateObjectId], async (req, res) => {
+  const {
+      error
+  } = validate(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  const user = await User.findByIdAndUpdate(req.params.id, {
+      totalBank: req.body.totalBank
+  }, {
+      new: true
+  });
+
+  if (!user) return res.status(404).send('The user with the given ID was not found.');
 
   res.send(user);
 });
