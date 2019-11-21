@@ -38,23 +38,19 @@ router.post('/', [auth, validateUserId, validateBookmakerId], async (req, res) =
         });
         deposit = await Deposit.insertOne(deposit, options);
 
-        let bookmaker = await Bookmaker.findById(deposit.bookmaker_id, options);
+        /*let bookmaker = await Bookmaker.findById(deposit.bookmaker_id, options);
         bookmaker.bank = bookmaker.bank + deposit.amount
         bookmaker.deposits = bookmaker.deposits + deposit.amount
         bookmaker = await Bookmaker.findByIdAndUpdate(bookmaker._id, bookmaker, options);
 
         let user = await User.findById(deposit.user_id).select('-password');
         user.bank = user.bank + deposit.amount
-        user = await User.findByIdAndUpdate(user._id, user, options);
+        user = await User.findByIdAndUpdate(user._id, user, options);*/
         
         await session.commitTransaction();
         session.endSession();
         
-        res.send({
-            deposit: deposit,
-            bookmaker: bookmaker,
-            user: user
-        });
+        res.send(deposit);
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
