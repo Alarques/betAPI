@@ -5,7 +5,10 @@ const {
     Deposit,
     validate
 } = require('../models/deposit');
+const Bookmaker = require('../models/bookmaker');
+const User = require('../models/user');
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const auth = require('../middleware/auth');
 
@@ -13,21 +16,47 @@ const auth = require('../middleware/auth');
  * * Crea un ingreso en una casa de apuestas
  */
 router.post('/', [auth, validateUserId, validateBookmakerId], async (req, res) => {
-    const {
-        error
-    } = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        const options = {
+            session,
+            new: true
+        };
 
-    let deposit = new Deposit({
-        bookmaker_id: req.body.bookmaker_id,
-        user_id: req.body.user_id,
-        date: req.body.date,
-        method: req.body.method,
-        amount: req.body.amount
-    });
-    deposit = await deposit.save();
+        /*const {
+            error
+        } = validate(req.body);
+        if (error) return res.status(400).send(error.details[0].message);*/
 
-    res.send(deposit);
+        let deposit = new Deposit({
+            bookmaker_id: req.body.bookmaker_id,
+            user_id: req.body.user_id,
+            date: req.body.date,
+            method: req.body.method,
+            amount: req.body.amount
+        });
+        deposit = await Deposit.insertOne(deposit, options);
+
+        let bookmaker = await Bookmaker.findById(deposit.bookmaker_id, options);
+        bookmaker.bank = bookmaker.bank + deposit.amount
+        bookmaker.deposits = bookmaker.deposits + deposit.amount
+        bookmaker = await Bookmaker.findByIdAndUpdate(bookmaker._id, bookmaker, options);
+
+        let user = await User.findById(deposit.user_id).select('-password');
+        user.bank = user.bank + deposit.amount
+        user = await User.findByIdAndUpdate(user._id, user, options);
+
+        res.send({
+            deposit: deposit,
+            bookmaker: bookmaker,
+            user: user
+        });
+    } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        res.status(400).send(error);
+    }
 });
 
 /**
@@ -88,7 +117,9 @@ router.get('/:id', [auth, validateObjectId], async (req, res) => {
 router.get('/user/:id', validateObjectId, async (req, res) => {
     const deposits = await Deposit.find({
         user_id: req.params.id
-    }).sort({date : -1});
+    }).sort({
+        date: -1
+    });
 
     //if (!bookmakers || bookmakers.length === 0) return res.status(404).send('The bookmakers with the given user was not found.');
 
@@ -103,7 +134,9 @@ router.get('/user/:id', validateObjectId, async (req, res) => {
 router.get('/bookmaker/:id', validateObjectId, async (req, res) => {
     const deposits = await Deposit.find({
         bookmaker_id: req.params.id
-    }).sort({date : -1});
+    }).sort({
+        date: -1
+    });
 
     //if (!bookmakers || bookmakers.length === 0) return res.status(404).send('The bookmakers with the given user was not found.');
 
