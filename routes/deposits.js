@@ -54,7 +54,7 @@ router.post('/', [auth, validateUserId, validateBookmakerId], async (req, res) =
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
-        res.status(400).send(error.details[0].message);
+        res.status(400).send(error.details[0]);
     }
 });
 
