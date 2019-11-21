@@ -17,27 +17,28 @@ const auth = require('../middleware/auth');
  */
 router.post('/', [auth, validateUserId, validateBookmakerId], async (req, res) => {
     const session = await mongoose.startSession();
-    session.startTransaction();
     try {
         const {
             error
         } = validate(req.body);
         if (error) return res.status(400).send(error.details[0].message);
 
-        let deposit = new Deposit({
-            bookmaker_id: req.body.bookmaker_id,
-            user_id: req.body.user_id,
-            date: req.body.date,
-            method: req.body.method,
-            amount: req.body.amount
+        await session.withTransaction(async () => {
+            let deposit = new Deposit({
+                bookmaker_id: req.body.bookmaker_id,
+                user_id: req.body.user_id,
+                date: req.body.date,
+                method: req.body.method,
+                amount: req.body.amount
+            });
+            await Deposit.insertOne({
+                bookmaker_id: deposit.bookmaker_id,
+                user_id: deposit.user_id,
+                date: deposit.date,
+                method: deposit.method,
+                amount: deposit.amount
+            }, {session});
         });
-        await Deposit.insertOne({
-            bookmaker_id: deposit.bookmaker_id,
-            user_id: deposit.user_id,
-            date: deposit.date,
-            method: deposit.method,
-            amount: deposit.amount
-        }, {session});
 
         /*let bookmaker = await Bookmaker.findById(deposit.bookmaker_id, options);
         bookmaker.bank = bookmaker.bank + deposit.amount
@@ -47,15 +48,11 @@ router.post('/', [auth, validateUserId, validateBookmakerId], async (req, res) =
         let user = await User.findById(deposit.user_id).select('-password');
         user.bank = user.bank + deposit.amount
         user = await User.findByIdAndUpdate(user._id, user, options);*/
-        
-        await session.commitTransaction();
-        session.endSession();
-        
+
         res.send(deposit);
-    } catch (error) {
-        await session.abortTransaction();
-        session.endSession();
-        res.status(400).send(error.details[0]);
+    } finally {
+        await session.endSession();
+        res.status(400).send(error.details[0].message);
     }
 });
 
