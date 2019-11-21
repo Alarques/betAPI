@@ -19,11 +19,6 @@ router.post('/', [auth, validateUserId, validateBookmakerId], async (req, res) =
     const session = await mongoose.startSession();
     session.startTransaction();
     try {
-        const options = {
-            session,
-            new: true
-        };
-
         const {
             error
         } = validate(req.body);
@@ -42,7 +37,7 @@ router.post('/', [auth, validateUserId, validateBookmakerId], async (req, res) =
             date: deposit.date,
             method: deposit.method,
             amount: deposit.amount
-        }, options);
+        }, {session});
 
         /*let bookmaker = await Bookmaker.findById(deposit.bookmaker_id, options);
         bookmaker.bank = bookmaker.bank + deposit.amount
