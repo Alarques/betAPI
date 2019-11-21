@@ -24,10 +24,10 @@ router.post('/', [auth, validateUserId, validateBookmakerId], async (req, res) =
             new: true
         };
 
-        /*const {
+        const {
             error
         } = validate(req.body);
-        if (error) return res.status(400).send(error.details[0].message);*/
+        if (error) return res.status(400).send(error.details[0].message);
 
         let deposit = new Deposit({
             bookmaker_id: req.body.bookmaker_id,
