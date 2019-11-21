@@ -31,7 +31,7 @@ router.post('/', [auth, validateUserId, validateBookmakerId], async (req, res) =
             method: req.body.method,
             amount: req.body.amount
         });
-        deposit = await Deposit.insertOne({
+        await Deposit.insertOne({
             bookmaker_id: deposit.bookmaker_id,
             user_id: deposit.user_id,
             date: deposit.date,
